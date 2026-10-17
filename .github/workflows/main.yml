@@ -328,7 +328,9 @@ jobs:
             cd KernelSU-Next && patch -p1 < /tmp/ksun-add-more-managers-support.patch && cd ..
 
           elif [ "$VARIANT" == "KSUS" ]; then
-            curl -LSs "https://raw.githubusercontent.com/pershoot/kernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
+            # SukiSU-Ultra "builtin" branch: the only SukiSU line with built-in SUSFS support.
+            # Its kernel UAPI is 2 -> pair with manager v4.2.0 (UAPI 2), not v4.2.1 (UAPI 5).
+            curl -fLSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s builtin
             git clone https://gitlab.com/simonpunk/susfs4ksu/ -b gki-android12-5.10 sus
             rm -rf sus/.git
             susfs=sus/kernel_patches
@@ -338,17 +340,8 @@ jobs:
 
             echo "CONFIG_KSU=y" >> $DEFCONFIG
             echo "CONFIG_KSU_SUSFS=y" >> $DEFCONFIG
-            if [ -f "drivers/kernelsu/supercalls.c" ]; then
-              sed -i 's/#ifdef CONFIG_KSU_SUSFS_SPOOF_UNAME/#if 0 \/\* CONFIG_KSU_SUSFS_SPOOF_UNAME Disabled to fix build \*\//' drivers/kernelsu/supercalls.c || true
-              echo "SUSFS symbol fix applied for KernelSU-Next."
-            else
-              echo "Skipping obsolete SUSFS uname fix."
-            fi
             echo "ENABLE_SUSFS=true" >> $GITHUB_ENV
             
-            echo "Patch All Managers Support..."
-            curl -fLSs "https://raw.githubusercontent.com/waheiiiddd-lab/gki-builder/refs/heads/6.x/kernel-patches/ksu/ksun-add-more-managers-support.patch" -o /tmp/ksun-add-more-managers-support.patch
-            cd KernelSU-Next && patch -p1 < /tmp/ksun-add-more-managers-support.patch && cd ..
 
           else
             echo "ENABLE_SUSFS=false" >> $GITHUB_ENV
@@ -411,7 +404,7 @@ jobs:
           if [ "$VARIANT" == "KSU" ]; then
             SUFFIX="$SUFFIX-KSU"
           elif [ "$VARIANT" == "KSUS" ]; then
-            SUFFIX="$SUFFIX-HybridVelocity.3.8"
+            SUFFIX="$SUFFIX-HybridVelocity.3.8-suki"
           elif [ "$VARIANT" == "VNL" ]; then
             SUFFIX="$SUFFIX-VNL"
           fi
