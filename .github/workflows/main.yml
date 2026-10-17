@@ -446,6 +446,10 @@ jobs:
         run: |
           # Ensure repo is in path for build scripts if needed
           export PATH="$HOME/bin:$PATH"
+          # Hermetic mode links host tools with --rtlib=compiler-rt against the AOSP
+          # sysroot, which only AOSP clang ships builtins for. Use the runner's libs.
+          sudo apt-get install -y -qq libelf-dev libssl-dev >/dev/null
+          export HERMETIC_TOOLCHAIN=0
           export SKIP_ABI_CHECKS=1
           export UPDATE_SYMBOL_LIST=1
           export KMI_SYMBOL_LIST_STRICT_MODE=0
