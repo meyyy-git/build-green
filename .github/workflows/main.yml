@@ -330,7 +330,9 @@ jobs:
           elif [ "$VARIANT" == "KSUS" ]; then
             # SukiSU-Ultra "builtin" branch: the only SukiSU line with built-in SUSFS support.
             # Its kernel UAPI is 2 -> pair with manager v4.2.0 (UAPI 2), not v4.2.1 (UAPI 5).
-            curl -fLSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s builtin
+            # Pinned to 6c284e9 (2026-10-09): builtin is broken from c895920 onwards
+            # (TRACK_THRONE_FORCE_SYNCHRONOUS / KSU_IOCTL_MANAGER used but never declared).
+            curl -fLSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s 6c284e957feaa9a388a9f1c37dc4ec80d95e434b
             git clone https://gitlab.com/simonpunk/susfs4ksu/ -b gki-android12-5.10 sus
             rm -rf sus/.git
             susfs=sus/kernel_patches
