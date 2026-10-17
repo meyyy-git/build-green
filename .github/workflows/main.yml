@@ -74,9 +74,9 @@ jobs:
       - name: Setup Kernel Source
         run: |
           cd gki/common
-          git remote add XTENSEI https://github.com/XTENSEI/kernel_common_5.10.git
-          git fetch -j12 XTENSEI
-          git checkout -b update-android12-5.10 XTENSEI/android12-5.10
+          git remote add waheiiiddd-lab https://github.com/waheiiiddd-lab/android_kernel_common-5.10.git
+          git fetch -j12 waheiiiddd-lab lts
+          git checkout -b update-lts waheiiiddd-lab/lts
           rm -rf drivers/staging/kernelsu
       
       - name: Naga Patch
@@ -323,7 +323,7 @@ jobs:
             echo "ENABLE_SUSFS=false" >> $GITHUB_ENV
             
             echo "Patch All Managers Support..."
-            curl -LSs "https://raw.githubusercontent.com/Kingfinik98/gki-builder/refs/heads/6.x/kernel-patches/ksu/ksun-add-more-managers-support.patch" -o /tmp/ksun-add-more-managers-support.patch
+            curl -fLSs "https://raw.githubusercontent.com/waheiiiddd-lab/gki-builder/refs/heads/6.x/kernel-patches/ksu/ksun-add-more-managers-support.patch" -o /tmp/ksun-add-more-managers-support.patch
             cd KernelSU-Next && patch -p1 < /tmp/ksun-add-more-managers-support.patch && cd ..
 
           elif [ "$VARIANT" == "KSUS" ]; then
@@ -346,7 +346,7 @@ jobs:
             echo "ENABLE_SUSFS=true" >> $GITHUB_ENV
             
             echo "Patch All Managers Support..."
-            curl -LSs "https://raw.githubusercontent.com/Kingfinik98/gki-builder/refs/heads/6.x/kernel-patches/ksu/ksun-add-more-managers-support.patch" -o /tmp/ksun-add-more-managers-support.patch
+            curl -fLSs "https://raw.githubusercontent.com/waheiiiddd-lab/gki-builder/refs/heads/6.x/kernel-patches/ksu/ksun-add-more-managers-support.patch" -o /tmp/ksun-add-more-managers-support.patch
             cd KernelSU-Next && patch -p1 < /tmp/ksun-add-more-managers-support.patch && cd ..
 
           else
