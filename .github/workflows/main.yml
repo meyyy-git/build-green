@@ -74,9 +74,10 @@ jobs:
       - name: Setup Kernel Source
         run: |
           cd gki/common
-          git remote add waheiiiddd-lab https://github.com/waheiiiddd-lab/android_kernel_common-5.10.git
-          git fetch -j12 waheiiiddd-lab lts
-          git checkout -b update-lts waheiiiddd-lab/lts
+          # Tree of the running "inline" kernel on garnet (KMI CRCs match its vendor modules).
+          # Commit is no longer on any branch, so fetch it by SHA.
+          git fetch -j12 --depth=1 https://github.com/rey-early/android_kernel_common-5.10.git 373fdae20548aff162af2adca81085524eeead37
+          git checkout -b inline-373fdae FETCH_HEAD
           rm -rf drivers/staging/kernelsu
       
       - name: Naga Patch
@@ -353,13 +354,17 @@ jobs:
             echo "ENABLE_SUSFS=false" >> $GITHUB_ENV
           fi
           
-          sed -i '/CONFIG_HZ=/d' $DEFCONFIG
+          # dispatch input is scheduler_hz, workflow_call input is SCHED_HZ; CONFIG_HZ alone is
+          # ignored by Kconfig, the HZ_<n> choice must be set.
+          HZ_VAL=$(echo "${{ inputs.SCHED_HZ || inputs.scheduler_hz }}" | sed 's/HZ//')
+          sed -i '/CONFIG_HZ=/d; /CONFIG_HZ_[0-9]*/d' $DEFCONFIG
+          # No CONFIG_ZRAM=y: garnet loads zram/zsmalloc/lzo as vendor modules.
           cat <<EOF >> $DEFCONFIG
-          CONFIG_HZ=$(echo "${{ inputs.SCHED_HZ }}" | sed 's/HZ//')
+          CONFIG_HZ_${HZ_VAL}=y
+          CONFIG_HZ=${HZ_VAL}
           CONFIG_EXT4_FS=y
           CONFIG_EXT4_FS_POSIX_ACL=y
           CONFIG_EXT4_FS_SECURITY=y
-          CONFIG_ZRAM=y
           CONFIG_DEFAULT_BBR=y
           CONFIG_DEFAULT_TCP_CONG="bbr"
           CONFIG_TMPFS_POSIX_ACL=y
