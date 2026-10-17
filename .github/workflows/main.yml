@@ -411,7 +411,7 @@ jobs:
           if [ "$VARIANT" == "KSU" ]; then
             SUFFIX="$SUFFIX-KSU"
           elif [ "$VARIANT" == "KSUS" ]; then
-            SUFFIX="$SUFFIX-HybridVelocity.3.8"
+            SUFFIX="$SUFFIX-HybridVelocity.3.8-c22"
           elif [ "$VARIANT" == "VNL" ]; then
             SUFFIX="$SUFFIX-VNL"
           fi
@@ -425,18 +425,16 @@ jobs:
       - name: Setup Toolchain
         working-directory: gki
         run: |
-          mkdir -p prebuilts-master/clang/host/linux-x86
-          CLANG_VER="clang-r416183b"
-          CLANG_URL="https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master-kernel-build-2021/clang-r416183b.tar.gz"
+          # Cirrus (greenforce) clang 22.1.4 - same compiler as garnet's running inline kernel.
+          # build.config.common expects it at clang-r563880b.
+          CLANG_VER="gf-clang-22.1.4-20260411"
+          CLANG_URL="https://github.com/greenforce-project/greenforce_clang/releases/download/20260411/${CLANG_VER}.tar.gz"
           echo "CLANG_VER=$CLANG_VER" >> $GITHUB_ENV
-          mkdir -p prebuilts-master/clang/host/linux-x86/$CLANG_VER
-          cd prebuilts-master/clang/host/linux-x86
-          curl -L "${CLANG_URL}" -o clang-temp.tar.gz
-          tar -xzf clang-temp.tar.gz -C $CLANG_VER
-          rm -f clang-temp.tar.gz
-          rm -rf clang-r563880b
-          ln -sf $CLANG_VER clang-r563880b
-      
+          CLANG_DIR=prebuilts-master/clang/host/linux-x86/clang-r563880b
+          rm -rf "$CLANG_DIR" && mkdir -p "$CLANG_DIR"
+          curl -fL "$CLANG_URL" | tar -xz -C "$CLANG_DIR"
+          "$CLANG_DIR/bin/clang" --version | head -1
+
       - name: Commit changes
         working-directory: gki/common
         run: |
