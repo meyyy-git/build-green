@@ -74,10 +74,9 @@ jobs:
       - name: Setup Kernel Source
         run: |
           cd gki/common
-          # Tree of the running "inline" kernel on garnet (KMI CRCs match its vendor modules).
-          # Commit is no longer on any branch, so fetch it by SHA.
-          git fetch -j12 --depth=1 https://github.com/rey-early/android_kernel_common-5.10.git 373fdae20548aff162af2adca81085524eeead37
-          git checkout -b inline-373fdae FETCH_HEAD
+          # Inline tree 373fdae2 + ACK android12-5.10 (5.10.269, 89a3b6a3f), conflicts resolved.
+          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git 2fa8a6a3099edc3e6662b270e07e5e4bc766d921
+          git checkout -b merge-269 FETCH_HEAD
           rm -rf drivers/staging/kernelsu
       
       - name: Naga Patch
@@ -411,7 +410,7 @@ jobs:
           if [ "$VARIANT" == "KSU" ]; then
             SUFFIX="$SUFFIX-KSU"
           elif [ "$VARIANT" == "KSUS" ]; then
-            SUFFIX="$SUFFIX-HybridVelocity.3.8-c22"
+            SUFFIX="$SUFFIX-HybridVelocity.3.9-c22"
           elif [ "$VARIANT" == "VNL" ]; then
             SUFFIX="$SUFFIX-VNL"
           fi
