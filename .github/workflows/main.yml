@@ -74,8 +74,8 @@ jobs:
       - name: Setup Kernel Source
         run: |
           cd gki/common
-          # Inline tree 373fdae2 + ACK android12-5.10 (5.10.269, 89a3b6a3f), conflicts resolved.
-          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git 2fa8a6a3099edc3e6662b270e07e5e4bc766d921
+          # Inline tree 373fdae2 + ACK android12-5.10 (5.10.269, 89a3b6a3f), conflicts and duplicate backports resolved.
+          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git 0a647ee012ab00f8fcad62a0c5021cff32f05b0e
           git checkout -b merge-269 FETCH_HEAD
           rm -rf drivers/staging/kernelsu
       
