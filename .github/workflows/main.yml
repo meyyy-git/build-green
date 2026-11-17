@@ -75,7 +75,7 @@ jobs:
         run: |
           cd gki/common
           # Inline tree 373fdae2 + ACK android12-5.10 (5.10.269, 89a3b6a3f), conflicts and duplicate backports resolved.
-          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git 24077bb912100cabab63fbf8d2e164e8cbd89141
+          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git fb5c0dd157e5cd7e539e16ec2b17a78679d89f7d
           git checkout -b merge-274 FETCH_HEAD
           rm -rf drivers/staging/kernelsu
       
