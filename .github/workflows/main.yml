@@ -75,7 +75,7 @@ jobs:
         run: |
           cd gki/common
           # Inline tree 373fdae2 + ACK android12-5.10 (5.10.269, 89a3b6a3f), conflicts and duplicate backports resolved.
-          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git fb5c0dd157e5cd7e539e16ec2b17a78679d89f7d
+          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git 54ccdf764ba9c6fd1c9b0650f00864f306d10e70
           git checkout -b merge-274 FETCH_HEAD
           rm -rf drivers/staging/kernelsu
       
@@ -327,8 +327,11 @@ jobs:
             cd KernelSU-Next && patch -p1 < /tmp/ksun-add-more-managers-support.patch && cd ..
 
           elif [ "$VARIANT" == "KSUS" ]; then
-            curl -LSs "https://raw.githubusercontent.com/pershoot/kernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
+            # Dikunci ke commit build 269 (UAPI 6 / SUSFS v2.3.0) agar cocok dengan ksud & ksu_susfs di HP.
+            curl -LSs "https://raw.githubusercontent.com/pershoot/kernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s 179225248b9dcecf5aa2ce133c5b274c018bac2d
+            git -C KernelSU-Next rev-parse HEAD | grep -q '^179225248b9d' || { echo "KSU-Next pin gagal"; exit 1; }
             git clone https://gitlab.com/simonpunk/susfs4ksu/ -b gki-android12-5.10 sus
+            git -C sus checkout ca7093a1a26f7911987110c34a1352d74cfb1d09
             rm -rf sus/.git
             susfs=sus/kernel_patches
             cp -r $susfs/fs . && cp -r $susfs/include .
