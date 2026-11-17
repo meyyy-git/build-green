@@ -328,7 +328,10 @@ jobs:
 
           elif [ "$VARIANT" == "KSUS" ]; then
             # Dikunci ke commit build 269 (UAPI 6 / SUSFS v2.3.0) agar cocok dengan ksud & ksu_susfs di HP.
-            curl -LSs "https://raw.githubusercontent.com/pershoot/kernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s 179225248b9dcecf5aa2ce133c5b274c018bac2d
+            curl -LSs "https://raw.githubusercontent.com/pershoot/kernelSU-Next/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
+            # setup.sh meng-clone dangkal, jadi commit pin di-fetch eksplisit
+            git -C KernelSU-Next fetch --depth=1 origin 179225248b9dcecf5aa2ce133c5b274c018bac2d
+            git -C KernelSU-Next checkout -q FETCH_HEAD
             git -C KernelSU-Next rev-parse HEAD | grep -q '^179225248b9d' || { echo "KSU-Next pin gagal"; exit 1; }
             git clone https://gitlab.com/simonpunk/susfs4ksu/ -b gki-android12-5.10 sus
             git -C sus checkout ca7093a1a26f7911987110c34a1352d74cfb1d09
