@@ -75,8 +75,8 @@ jobs:
         run: |
           cd gki/common
           # Inline tree 373fdae2 + ACK android12-5.10 (5.10.269, 89a3b6a3f), conflicts and duplicate backports resolved.
-          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git 0a647ee012ab00f8fcad62a0c5021cff32f05b0e
-          git checkout -b merge-269 FETCH_HEAD
+          git fetch -j12 --depth=1 https://github.com/meyyy-git/android_kernel_common-5.10.git 24077bb912100cabab63fbf8d2e164e8cbd89141
+          git checkout -b merge-274 FETCH_HEAD
           rm -rf drivers/staging/kernelsu
       
       - name: Naga Patch
@@ -410,7 +410,7 @@ jobs:
           if [ "$VARIANT" == "KSU" ]; then
             SUFFIX="$SUFFIX-KSU"
           elif [ "$VARIANT" == "KSUS" ]; then
-            SUFFIX="$SUFFIX-HybridVelocity.3.9-c22"
+            SUFFIX="$SUFFIX-HybridVelocity.4.0-c22"
           elif [ "$VARIANT" == "VNL" ]; then
             SUFFIX="$SUFFIX-VNL"
           fi
